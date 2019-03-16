@@ -1,5 +1,6 @@
 import ec2 = require('@aws-cdk/aws-ec2')
 import ecs = require('@aws-cdk/aws-ecs')
+import ecr = require('@aws-cdk/aws-ecr')
 import cdk = require('@aws-cdk/cdk')
 
 export class OpsStack extends cdk.Stack {
@@ -12,13 +13,15 @@ export class OpsStack extends cdk.Stack {
     const vpc = new ec2.VpcNetwork(this, 'MyVpc', { maxAZs: 2 })
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc })
 
+    const ecrRepository = new ecr.Repository(this, 'phstc/shoryuken-fargate')
+
     // Instantiate Fargate Service with just cluster and image
     const fargateService = new ecs.LoadBalancedFargateService(
       this,
       'FargateService',
       {
         cluster,
-        image: ecs.ContainerImage.fromDockerHub('amazon/amazon-ecs-sample')
+        image: ecs.ContainerImage.fromEcrRepository(ecrRepository, 'latest')
       }
     )
 
