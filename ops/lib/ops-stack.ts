@@ -9,7 +9,7 @@ export class OpsStack extends cdk.Stack {
 
     const queue = this.createQueue()
 
-    const taskDefinition = this.createFargate(queue.queueName)
+    const taskDefinition = this.createFargate({ QUEUE_NAME: queue.queueName })
 
     this.grant(queue, taskDefinition)
   }
@@ -32,7 +32,7 @@ export class OpsStack extends cdk.Stack {
     )
   }
 
-  createFargate(queueName: string) {
+  createFargate(environment: { [key: string]: string }) {
     // https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/ecs/fargate-load-balanced-service/index.ts
     // Create VPC and Fargate Cluster
     // NOTE: Limit AZs to avoid reaching resource quotas
@@ -41,14 +41,12 @@ export class OpsStack extends cdk.Stack {
 
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
       memoryMiB: '512',
-      cpu: '256',
+      cpu: '256'
     })
 
     taskDefinition.addContainer('ShoryukenContainer', {
       image: ecs.ContainerImage.fromDockerHub('phstc/shoryuken-fargate'),
-      environment: {
-        'QUEUE_NAME': queueName
-      }
+      environment
     })
 
     const service = new ecs.FargateService(this, 'Service', {
