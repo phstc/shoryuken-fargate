@@ -1,9 +1,7 @@
 version: '3'
 services:
-  web:
+  shoryuken:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "bundle exec shoryuken -C config/shoryuken.yml -R -r ./lib/worker.rb"
     volumes:
       - .:/app
-    ports:
-      - "3000:3000"
