@@ -4,5 +4,5 @@ import cdk = require('@aws-cdk/cdk')
 import { OpsStack } from '../lib/ops-stack'
 
 const app = new cdk.App()
-new OpsStack(app, 'OpsStack')
+new OpsStack(app, 'ShoryukenFargateM')
 app.run()
